@@ -1,0 +1,205 @@
+/* Admin-specific styles */
+.admin-tabs {
+  display: flex;
+  border-bottom: 1px solid #eaeaea;
+  margin-bottom: 30px;
+}
+
+.admin-tab {
+  flex: 1;
+  padding: 15px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #718096;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.admin-tab.active {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.admin-content {
+  background-color: white;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+}
+
+.admin-form h2 {
+  margin-bottom: 20px;
+  color: #2d3748;
+  font-size: 24px;
+}
+
+.file-input-container {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+.file-input {
+  position: absolute;
+  font-size: 100px;
+  opacity: 0;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+.file-input-label {
+  display: block;
+  padding: 12px;
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  color: #4a5568;
+  cursor: pointer;
+  text-align: center;
+}
+
+.file-input-label:hover {
+  background-color: #edf2f7;
+}
+
+.form-description {
+  text-align: center;
+  color: #718096;
+  margin-bottom: 20px;
+}
+
+.form-note {
+  font-size: 14px;
+  color: #a0aec0;
+  margin-top: 20px;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Make nav links clickable */
+.nav-links a {
+  cursor: pointer;
+}
+
+/* Orders Table Styles */
+.admin-orders {
+  overflow: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.admin-table th {
+  background-color: #f7f7f7;
+  font-weight: 600;
+  color: #333;
+}
+
+.admin-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.payment-status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.payment-status.paid {
+  background-color: #c6f6d5;
+  color: #2f855a;
+}
+
+.payment-status.pending {
+  background-color: #feebc8;
+  color: #dd6b20;
+}
+
+.payment-status.failed {
+  background-color: #fed7d7;
+  color: #e53e3e;
+}
+
+.order-items-list {
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.order-items-list ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.order-items-list li {
+  margin-bottom: 4px;
+}
+
+.orders-table-container {
+  overflow-x: auto;
+}
+
+.no-orders-message {
+  text-align: center;
+  padding: 30px;
+  color: #718096;
+}
+
+/* Section header and refresh button styles */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.refresh-btn {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.refresh-btn:hover {
+  background-color: #3182ce;
+}
+
+.refresh-btn:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-content {
+    padding: 20px;
+  }
+  
+  .admin-table {
+    font-size: 14px;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 10px;
+  }
+}

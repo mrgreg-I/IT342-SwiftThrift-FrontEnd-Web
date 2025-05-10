@@ -1,0 +1,44 @@
+/* Add your styles here */
+.container {
+  padding: 20px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #333;
+}
+
+.nav-links li a.active {
+  font-weight: bold;
+}
+
+.orders-list {
+  margin-top: 20px;
+}
+
+.order-item {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.order-item h4 {
+  margin: 0 0 5px;
+}
+
+.order-item p {
+  margin: 0;
+}
