@@ -3,15 +3,15 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+export const dynamic = 'force-dynamic'; // Add this line
+
 export default function PaymentSuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
   useEffect(() => {
-    // Get session_id from the URL
     const sessionId = searchParams?.get('session_id');
     
-    // Redirect to orders page with session_id param
     if (sessionId) {
       router.push(`/orders?session_id=${sessionId}`);
     } else {
