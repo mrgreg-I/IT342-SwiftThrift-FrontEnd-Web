@@ -36,11 +36,11 @@ export default function WishlistPage() {
   async function fetchWishlist(userId) {
     try {
       setLoading(true)
-      const res = await axios.get(`https://swiftthrift-457008.as.r.appspot.com/api/wishlist/byUser/${userId}`)
+      const res = await axios.get(`https://swiftthrift-457311.as.r.appspot.com/api/wishlist/byUser/${userId}`)
 
       if (res.data && res.data.length > 0) {
         const wishlistId = res.data[0].wishlistId || res.data[0].id
-        const itemsRes = await axios.get(`https://swiftthrift-457008.as.r.appspot.com/api/wishlistItems/wishlist/${wishlistId}`)
+        const itemsRes = await axios.get(`https://swiftthrift-457311.as.r.appspot.com/api/wishlistItems/wishlist/${wishlistId}`)
         setWishlistItems(itemsRes.data)
       } else {
         setWishlistItems([])
@@ -57,7 +57,7 @@ export default function WishlistPage() {
 
   const handleRemove = async (itemId) => {
     try {
-      await axios.delete(`https://swiftthrift-457008.as.r.appspot.com/api/wishlistItems/${itemId}`)
+      await axios.delete(`https://swiftthrift-457311.as.r.appspot.com/api/wishlistItems/${itemId}`)
       // Refresh the wishlist after deletion
       if (user) {
         fetchWishlist(user.userId)
@@ -89,7 +89,7 @@ export default function WishlistPage() {
     }
 
     // Return the complete URL
-    return `https://swiftthrift-457008.as.r.appspot.com${imageUrl}`
+    return `https://swiftthrift-457311.as.r.appspot.com${imageUrl}`
   }
 
   if (loading) {

@@ -45,7 +45,7 @@ export default function AdminPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("https://swiftthrift-457008.as.r.appspot.com/api/categories/all")
+      const response = await axios.get("https://swiftthrift-457311.as.r.appspot.com/api/categories/all")
       setCategories(response.data)
     } catch (error) {
       console.error("Error fetching categories:", error)
@@ -59,7 +59,7 @@ export default function AdminPage() {
       setPaymentsError("");
       
       // Fetch all orders
-      const response = await axios.get("https://swiftthrift-457008.as.r.appspot.com/api/orders/all");
+      const response = await axios.get("https://swiftthrift-457311.as.r.appspot.com/api/orders/all");
       
       // Get payment details for each order
       const ordersWithPayments = [];
@@ -71,7 +71,7 @@ export default function AdminPage() {
             // Try to find payment for this order
             // Note: Make sure this endpoint exists on your backend
             const paymentRes = await axios.get(
-              `https://swiftthrift-457008.as.r.appspot.com/api/payments/user/${order.user?.userId}`,
+              `https://swiftthrift-457311.as.r.appspot.com/api/payments/user/${order.user?.userId}`,
             );
             
             // Find a payment that matches this order
@@ -111,7 +111,7 @@ export default function AdminPage() {
   const handleSignIn = async () => {
     try {
       setError("")
-      const response = await axios.post("https://swiftthrift-457008.as.r.appspot.com/api/admins/login", {
+      const response = await axios.post("https://swiftthrift-457311.as.r.appspot.com/api/admins/login", {
         username,
         password,
       })
@@ -148,7 +148,7 @@ export default function AdminPage() {
         Array.from(files).forEach((file) => formData.append("files", file))
       }
 
-      await axios.post("https://swiftthrift-457008.as.r.appspot.com/api/products/create", formData, {
+      await axios.post("https://swiftthrift-457311.as.r.appspot.com/api/products/create", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
 
@@ -170,7 +170,7 @@ export default function AdminPage() {
         return
       }
 
-      await axios.post("https://swiftthrift-457008.as.r.appspot.com/api/categories/create", category)
+      await axios.post("https://swiftthrift-457311.as.r.appspot.com/api/categories/create", category)
       alert("Category added successfully!")
       setCategory({ categoryName: "" })
       fetchCategories() // Refresh the dropdown

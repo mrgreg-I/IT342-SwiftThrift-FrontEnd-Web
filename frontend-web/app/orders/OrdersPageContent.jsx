@@ -44,7 +44,7 @@ export default function OrdersPageContent() {
     try {
       setLoading(true);
       const res = await axios.get(
-        `https://swiftthrift-457008.as.r.appspot.com/api/orders/byUser/${userId}`
+        `https://swiftthrift-457311.as.r.appspot.com/api/orders/byUser/${userId}`
       );
       setOrders(res.data || []);
     } catch (e) {
@@ -153,7 +153,7 @@ export default function OrdersPageContent() {
                           <img
                             src={item.product.imageUrls[0].startsWith('http')
                               ? item.product.imageUrls[0]
-                              : `https://swiftthrift-457008.as.r.appspot.com${item.product.imageUrls[0]}`}
+                              : `https://swiftthrift-457311.as.r.appspot.com${item.product.imageUrls[0]}`}
                             alt={item.product.name}
                             style={{ width: '50px', height: '50px', objectFit: 'cover', marginRight: '12px', borderRadius: '4px' }}
                           />

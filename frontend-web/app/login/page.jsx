@@ -29,7 +29,7 @@ export default function LoginPage() {
     setSuccess("")
 
     try {
-      const response = await fetch("https://swiftthrift-457008.as.r.appspot.com/api/users/login", {
+      const response = await fetch("https://swiftthrift-457311.as.r.appspot.com/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await fetch("https://swiftthrift-457008.as.r.appspot.com/api/users/create", {
+      const response = await fetch("https://swiftthrift-457311.as.r.appspot.com/api/users/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

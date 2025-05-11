@@ -26,7 +26,7 @@ export default function ProductsPage() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("https://swiftthrift-457008.as.r.appspot.com/api/products/all");
+      const response = await axios.get("https://swiftthrift-457311.as.r.appspot.com/api/products/all");
       console.log("API response:", response.data);
       
       // Ensure products is always an array
@@ -85,13 +85,13 @@ export default function ProductsPage() {
     if (!user) return
     async function fetchWishlist() {
       try {
-        const res = await axios.get(`https://swiftthrift-457008.as.r.appspot.com/api/wishlist/byUser/${user.userId}`)
+        const res = await axios.get(`https://swiftthrift-457311.as.r.appspot.com/api/wishlist/byUser/${user.userId}`)
         if (res.data && res.data.length > 0) {
           setWishlistId(res.data[0].id || res.data[0].wishlistId)
-          const itemsRes = await axios.get(`https://swiftthrift-457008.as.r.appspot.com/api/wishlistItems/wishlist/${res.data[0].id || res.data[0].wishlistId}`)
+          const itemsRes = await axios.get(`https://swiftthrift-457311.as.r.appspot.com/api/wishlistItems/wishlist/${res.data[0].id || res.data[0].wishlistId}`)
           setWishlistItems(itemsRes.data.map(item => item.product.productId))
         } else {
-          const createRes = await axios.post("https://swiftthrift-457008.as.r.appspot.com/api/wishlist/create", {
+          const createRes = await axios.post("https://swiftthrift-457311.as.r.appspot.com/api/wishlist/create", {
             user: { userId: user.userId }
           })
           setWishlistId(createRes.data.id || createRes.data.wishlistId)
@@ -111,24 +111,24 @@ export default function ProductsPage() {
     setAnimatingHeart(productId)
     try {
       if (!isInWishlist) {
-        await axios.post("https://swiftthrift-457008.as.r.appspot.com/api/wishlistItems/create", {
+        await axios.post("https://swiftthrift-457311.as.r.appspot.com/api/wishlistItems/create", {
           wishlist: { wishlistId: wishlistId },
           product: { productId }
         }, {
           withCredentials: true // This is important for CORS with credentials
         })
       } else {
-        const res = await axios.get(`https://swiftthrift-457008.as.r.appspot.com/api/wishlistItems/wishlist/${wishlistId}`, {
+        const res = await axios.get(`https://swiftthrift-457311.as.r.appspot.com/api/wishlistItems/wishlist/${wishlistId}`, {
           withCredentials: true
         })
         const item = res.data.find(i => i.product.productId === productId)
         if (item) {
-          await axios.delete(`https://swiftthrift-457008.as.r.appspot.com/api/wishlistItems/${item.wishlistid || item.id}`, {
+          await axios.delete(`https://swiftthrift-457311.as.r.appspot.com/api/wishlistItems/${item.wishlistid || item.id}`, {
             withCredentials: true
           })
         }
       }
-      const itemsRes = await axios.get(`https://swiftthrift-457008.as.r.appspot.com/api/wishlistItems/wishlist/${wishlistId}`, {
+      const itemsRes = await axios.get(`https://swiftthrift-457311.as.r.appspot.com/api/wishlistItems/wishlist/${wishlistId}`, {
         withCredentials: true
       })
       setWishlistItems(itemsRes.data.map(item => item.product.productId))
@@ -160,7 +160,7 @@ export default function ProductsPage() {
       // First try to get the user's cart
       try {
         console.log("Fetching cart for user", user.userId)
-        const res = await axios.get(`https://swiftthrift-457008.as.r.appspot.com/api/cart/byUser/${user.userId}`)
+        const res = await axios.get(`https://swiftthrift-457311.as.r.appspot.com/api/cart/byUser/${user.userId}`)
         userCart = res.data
         console.log("Cart found:", userCart)
         // Check if we got a valid cart with cartId
@@ -174,7 +174,7 @@ export default function ProductsPage() {
         // If cart not found, we need to check if user already has a cart in the backend
         try {
           // This is a workaround to check all carts to find user's cart if API is not working correctly
-          const allCartsRes = await axios.get("https://swiftthrift-457008.as.r.appspot.com/api/cart/all")
+          const allCartsRes = await axios.get("https://swiftthrift-457311.as.r.appspot.com/api/cart/all")
           const userExistingCart = allCartsRes.data.find(cart => 
             cart.user && cart.user.userId === user.userId
           )
@@ -186,7 +186,7 @@ export default function ProductsPage() {
           } else {
             // No cart exists yet, create one
             console.log("Creating new cart for user", user.userId)
-            const createRes = await axios.post("https://swiftthrift-457008.as.r.appspot.com/api/cart/create", {
+            const createRes = await axios.post("https://swiftthrift-457311.as.r.appspot.com/api/cart/create", {
               user: { userId: user.userId },
               totalPrice: 0
             })
@@ -206,7 +206,7 @@ export default function ProductsPage() {
       }
       console.log("Adding item to cart:", userCart.cartId, product.productId)
       // Now add the item to the cart with the valid cartId
-      await axios.post("https://swiftthrift-457008.as.r.appspot.com/api/cartItem/create", {
+      await axios.post("https://swiftthrift-457311.as.r.appspot.com/api/cartItem/create", {
         price: product.price,
         cart: { cartId: userCart.cartId },
         product: { productId: product.productId }
@@ -228,7 +228,7 @@ export default function ProductsPage() {
       return imageUrl;
     }
     // If it's a relative URL, prepend the API base URL
-    return `https://swiftthrift-457008.as.r.appspot.com${imageUrl}`;
+    return `https://swiftthrift-457311.as.r.appspot.com${imageUrl}`;
   };
 
   if (!authChecked || loading) {
