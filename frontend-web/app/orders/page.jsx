@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import "../styles.css";
 export const dynamic = 'force-dynamic';
+
+
 export default function OrdersPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
