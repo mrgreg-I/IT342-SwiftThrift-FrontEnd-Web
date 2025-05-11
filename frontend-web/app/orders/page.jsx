@@ -9,7 +9,6 @@ import "../styles.css";
 export default function OrdersPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,47 +17,44 @@ export default function OrdersPage() {
   const [sessionId, setSessionId] = useState(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const sessionIdParam = searchParams?.get('session_id');
+    const sessionIdParam = searchParams.get("session_id");
     if (sessionIdParam) {
       setSessionId(sessionIdParam);
       setPaymentSuccess(true);
     }
 
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const userData = typeof window !== "undefined" ? localStorage.getItem("user") : null;
+
+    if (!token || !userData) {
       router.push("/login");
       return;
     }
 
     try {
-      const userData = localStorage.getItem("user");
-      const parsedUser = userData ? JSON.parse(userData) : null;
+      const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
-
-      if (parsedUser?.userId) {
-        fetchOrders(parsedUser.userId);
-      }
-    } catch (err) {
-      console.error("User parse error:", err);
-      setError("Error loading user data. Try logging in again.");
-      setLoading(false);
+      fetchOrders(parsedUser.userId);
+    } catch (e) {
+      console.error("User parsing error", e);
+      setError("Unable to load user data. Please try logging in again.");
     }
-  }, [searchParams, router]);
+  }, []);
 
-  async function fetchOrders(userId) {
+  const fetchOrders = async (userId) => {
     try {
       setLoading(true);
-      const res = await axios.get(`https://swiftthrift-457008.as.r.appspot.com/api/orders/byUser/${userId}`);
+      const res = await axios.get(
+        `https://swiftthrift-457008.as.r.appspot.com/api/orders/byUser/${userId}`
+      );
       setOrders(res.data || []);
-    } catch (err) {
-      console.error("Error fetching orders:", err);
-      setError("Unable to fetch your orders.");
+    } catch (e) {
+      console.error("Order fetching failed:", e);
+      setError("Failed to fetch your orders.");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleLogout = () => {
     if (typeof window !== "undefined") {
@@ -71,7 +67,7 @@ export default function OrdersPage() {
   if (loading) {
     return (
       <div className="loading-container">
-        <div className="loading-spinner" />
+        <div className="loading-spinner"></div>
         <p>Loading your orders...</p>
       </div>
     );
@@ -79,7 +75,6 @@ export default function OrdersPage() {
 
   return (
     <div className="container">
-      {/* NAVBAR */}
       <nav className="navbar">
         <div className="logo">Swiftthrift</div>
         <ul className="nav-links">
@@ -94,7 +89,6 @@ export default function OrdersPage() {
         </div>
       </nav>
 
-      {/* HEADER */}
       <div className="page-header">
         <h1>Your Orders</h1>
         <p>Track and manage your purchases</p>
@@ -110,22 +104,13 @@ export default function OrdersPage() {
           textAlign: "center"
         }}>
           <h2>Payment Successful!</h2>
-          <p>Your order has been placed successfully. Thank you for your purchase!</p>
+          <p>Your order has been placed successfully.</p>
           <p>Session ID: {sessionId}</p>
         </div>
       )}
 
-      {error && (
-        <div className="error-message" style={{
-          backgroundColor: "#fed7d7",
-          color: "#c53030",
-          padding: "12px",
-          borderRadius: "6px",
-          marginBottom: "20px"
-        }}>{error}</div>
-      )}
+      {error && <div className="error-message">{error}</div>}
 
-      {/* ORDERS */}
       <div className="orders-list">
         {orders.length > 0 ? (
           orders.map((order) => (
@@ -136,7 +121,11 @@ export default function OrdersPage() {
               marginBottom: "16px",
               boxShadow: "0 2px 6px rgba(0,0,0,0.08)"
             }}>
-              <div className="order-header" style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+              <div className="order-header" style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px"
+              }}>
                 <h3>Order #{order.orderId}</h3>
                 <span className={`order-status ${order.status?.toLowerCase()}`} style={{
                   padding: "4px 10px",
@@ -144,13 +133,13 @@ export default function OrdersPage() {
                   fontSize: "14px",
                   backgroundColor: order.status === "COMPLETED" ? "#c6f6d5" : "#feebc8",
                   color: order.status === "COMPLETED" ? "#2f855a" : "#dd6b20"
-                }}>{order.status || "Processing"}</span>
+                }}>
+                  {order.status || "Processing"}
+                </span>
               </div>
-
               <div className="order-date">
                 <p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
               </div>
-
               <div className="order-items" style={{ margin: "16px 0" }}>
                 {order.orderItems?.length > 0 ? (
                   order.orderItems.map((item) => (
@@ -161,31 +150,25 @@ export default function OrdersPage() {
                       padding: "12px 0"
                     }}>
                       <div className="item-details" style={{ display: "flex", alignItems: "center" }}>
-                        {item.product?.imageUrls?.[0] && (
+                        {item.product?.imageUrls?.length > 0 && (
                           <img
-                            src={
-                              item.product.imageUrls[0].startsWith("http")
-                                ? item.product.imageUrls[0]
-                                : `https://swiftthrift-457008.as.r.appspot.com${item.product.imageUrls[0]}`
-                            }
+                            src={item.product.imageUrls[0].startsWith("http")
+                              ? item.product.imageUrls[0]
+                              : `https://swiftthrift-457008.as.r.appspot.com${item.product.imageUrls[0]}`}
                             alt={item.product.name}
-                            style={{
-                              width: "50px",
-                              height: "50px",
-                              objectFit: "cover",
-                              marginRight: "12px",
-                              borderRadius: "4px"
-                            }}
+                            style={{ width: "50px", height: "50px", objectFit: "cover", marginRight: "12px", borderRadius: "4px" }}
                           />
                         )}
                         <div>
-                          <div style={{ fontWeight: "500" }}>{item.product?.name || "Product"}</div>
-                          <div style={{ fontSize: "12px", color: "#666" }}>Item ID: {item.orderItemid}</div>
+                          <div className="item-name" style={{ fontWeight: "500" }}>
+                            {item.product?.name || "Product"}
+                          </div>
+                          <div className="item-id" style={{ fontSize: "12px", color: "#666" }}>
+                            Item ID: {item.orderItemid}
+                          </div>
                         </div>
                       </div>
-                      <div className="item-price" style={{ fontWeight: "500" }}>
-                        ₱{item.subtotal.toFixed(2)}
-                      </div>
+                      <div className="item-price" style={{ fontWeight: "500" }}>₱{item.subtotal.toFixed(2)}</div>
                     </div>
                   ))
                 ) : (
@@ -194,7 +177,6 @@ export default function OrdersPage() {
                   </p>
                 )}
               </div>
-
               <div className="order-total" style={{
                 textAlign: "right",
                 fontWeight: "bold",
@@ -224,15 +206,13 @@ export default function OrdersPage() {
                 borderRadius: "4px",
                 marginTop: "16px",
                 cursor: "pointer"
-              }}
-            >
+              }}>
               Browse Products
             </button>
           </div>
         )}
       </div>
 
-      {/* FOOTER */}
       <footer className="footer">
         <p>&copy; 2025 Swiftthrift. All rights reserved.</p>
       </footer>
