@@ -208,16 +208,6 @@ export default function CartPage() {
       <div className="cart-content-flex">
         {/* Left: Cart Items */}
         <div className="cart-items-section">
-          <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-            <input
-              type="checkbox"
-              checked={selectedItems.length === cartItems.length && cartItems.length > 0}
-              onChange={handleSelectAll}
-              style={{ marginRight: 8 }}
-              id="select-all-cart"
-            />
-            <label htmlFor="select-all-cart" style={{ fontWeight: 500 }}>Select All</label>
-          </div>
           <div className="featured-products">
             <div className="products-grid">
               {cartItems.length > 0 ? cartItems.map(item => (

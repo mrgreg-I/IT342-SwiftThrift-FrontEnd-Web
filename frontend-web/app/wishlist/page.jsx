@@ -177,9 +177,6 @@ export default function WishlistPage() {
           ) : (
             <div className="no-products">
               <p>Your wishlist is empty.</p>
-              <button className="browse-products-btn" onClick={() => router.push("/products")}>
-                Browse Products
-              </button>
             </div>
           )}
         </div>
