@@ -1,23 +1,25 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-
-export const dynamic = 'force-dynamic'; // Add this line
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function PaymentSuccessPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  
+  const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
-    const sessionId = searchParams?.get('session_id');
+    setIsClient(true);
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
     
     if (sessionId) {
       router.push(`/orders?session_id=${sessionId}`);
     } else {
       router.push('/orders');
     }
-  }, [router, searchParams]);
+  }, [router]);
+
+  if (!isClient) return null; // Don't render on server
 
   return (
     <div style={{ 
