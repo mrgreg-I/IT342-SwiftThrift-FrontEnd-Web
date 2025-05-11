@@ -6,10 +6,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import "../styles.css";
 
-
 export default function OrdersPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +18,8 @@ export default function OrdersPage() {
   const [sessionId, setSessionId] = useState(null);
 
   useEffect(() => {
-    // Check if there's a session_id in the URL (payment success redirect)
+    if (typeof window === "undefined") return;
+
     const sessionIdParam = searchParams?.get('session_id');
     if (sessionIdParam) {
       setSessionId(sessionIdParam);
@@ -36,41 +37,41 @@ export default function OrdersPage() {
       const parsedUser = userData ? JSON.parse(userData) : null;
       setUser(parsedUser);
 
-      if (parsedUser) {
+      if (parsedUser?.userId) {
         fetchOrders(parsedUser.userId);
       }
-    } catch (error) {
-      console.error("Error parsing user data:", error);
-      setError("Failed to load user data. Please try logging in again.");
+    } catch (err) {
+      console.error("User parse error:", err);
+      setError("Error loading user data. Try logging in again.");
+      setLoading(false);
     }
-  }, [router, searchParams]);
+  }, [searchParams, router]);
 
   async function fetchOrders(userId) {
     try {
       setLoading(true);
-      // Fetch orders from the API
       const res = await axios.get(`https://swiftthrift-457008.as.r.appspot.com/api/orders/byUser/${userId}`);
-      console.log("Orders data:", res.data); // Debug log
       setOrders(res.data || []);
-      setError(null);
-    } catch (e) {
-      console.error("Error fetching orders:", e);
-      setError("Failed to load orders. Please try again later.");
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      setError("Unable to fetch your orders.");
     } finally {
       setLoading(false);
     }
   }
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    router.push("/login");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      router.push("/login");
+    }
   };
 
   if (loading) {
     return (
       <div className="loading-container">
-        <div className="loading-spinner"></div>
+        <div className="loading-spinner" />
         <p>Loading your orders...</p>
       </div>
     );
@@ -78,6 +79,7 @@ export default function OrdersPage() {
 
   return (
     <div className="container">
+      {/* NAVBAR */}
       <nav className="navbar">
         <div className="logo">Swiftthrift</div>
         <ul className="nav-links">
@@ -92,6 +94,7 @@ export default function OrdersPage() {
         </div>
       </nav>
 
+      {/* HEADER */}
       <div className="page-header">
         <h1>Your Orders</h1>
         <p>Track and manage your purchases</p>
@@ -112,8 +115,17 @@ export default function OrdersPage() {
         </div>
       )}
 
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div className="error-message" style={{
+          backgroundColor: "#fed7d7",
+          color: "#c53030",
+          padding: "12px",
+          borderRadius: "6px",
+          marginBottom: "20px"
+        }}>{error}</div>
+      )}
 
+      {/* ORDERS */}
       <div className="orders-list">
         {orders.length > 0 ? (
           orders.map((order) => (
@@ -132,44 +144,48 @@ export default function OrdersPage() {
                   fontSize: "14px",
                   backgroundColor: order.status === "COMPLETED" ? "#c6f6d5" : "#feebc8",
                   color: order.status === "COMPLETED" ? "#2f855a" : "#dd6b20"
-                }}>
-                  {order.status || "Processing"}
-                </span>
+                }}>{order.status || "Processing"}</span>
               </div>
-              
+
               <div className="order-date">
                 <p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
               </div>
-              
+
               <div className="order-items" style={{ margin: "16px 0" }}>
-                {order.orderItems && order.orderItems.length > 0 ? (
+                {order.orderItems?.length > 0 ? (
                   order.orderItems.map((item) => (
-                    <div key={item.orderItemid} className="order-item" style={{ 
-                      display: "flex", 
-                      justifyContent: "space-between", 
-                      borderBottom: "1px solid #eee", 
-                      padding: "12px 0" 
+                    <div key={item.orderItemid} className="order-item" style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      borderBottom: "1px solid #eee",
+                      padding: "12px 0"
                     }}>
                       <div className="item-details" style={{ display: "flex", alignItems: "center" }}>
-                        {item.product?.imageUrls && item.product.imageUrls.length > 0 && (
-                          <img 
-                            src={item.product.imageUrls[0].startsWith('http') 
-                              ? item.product.imageUrls[0] 
-                              : `https://swiftthrift-457008.as.r.appspot.com${item.product.imageUrls[0]}`}
+                        {item.product?.imageUrls?.[0] && (
+                          <img
+                            src={
+                              item.product.imageUrls[0].startsWith("http")
+                                ? item.product.imageUrls[0]
+                                : `https://swiftthrift-457008.as.r.appspot.com${item.product.imageUrls[0]}`
+                            }
                             alt={item.product.name}
-                            style={{ width: "50px", height: "50px", objectFit: "cover", marginRight: "12px", borderRadius: "4px" }}
+                            style={{
+                              width: "50px",
+                              height: "50px",
+                              objectFit: "cover",
+                              marginRight: "12px",
+                              borderRadius: "4px"
+                            }}
                           />
                         )}
                         <div>
-                          <div className="item-name" style={{ fontWeight: "500" }}>
-                            {item.product?.name || "Product"}
-                          </div>
-                          <div className="item-id" style={{ fontSize: "12px", color: "#666" }}>
-                            Item ID: {item.orderItemid}
-                          </div>
+                          <div style={{ fontWeight: "500" }}>{item.product?.name || "Product"}</div>
+                          <div style={{ fontSize: "12px", color: "#666" }}>Item ID: {item.orderItemid}</div>
                         </div>
                       </div>
-                      <div className="item-price" style={{ fontWeight: "500" }}>₱{item.subtotal.toFixed(2)}</div>
+                      <div className="item-price" style={{ fontWeight: "500" }}>
+                        ₱{item.subtotal.toFixed(2)}
+                      </div>
                     </div>
                   ))
                 ) : (
@@ -178,22 +194,27 @@ export default function OrdersPage() {
                   </p>
                 )}
               </div>
-              
-              <div className="order-total" style={{ 
-                textAlign: "right", 
-                fontWeight: "bold", 
-                borderTop: "1px solid #eee", 
+
+              <div className="order-total" style={{
+                textAlign: "right",
+                fontWeight: "bold",
+                borderTop: "1px solid #eee",
                 paddingTop: "16px",
-                marginTop: "8px" 
+                marginTop: "8px"
               }}>
                 <p>Total: <span style={{ color: "#ff6b6b" }}>₱{order.totalPrice.toFixed(2)}</span></p>
               </div>
             </div>
           ))
         ) : (
-          <div className="no-orders" style={{ textAlign: "center", padding: "30px", backgroundColor: "white", borderRadius: "8px" }}>
+          <div className="no-orders" style={{
+            textAlign: "center",
+            padding: "30px",
+            backgroundColor: "white",
+            borderRadius: "8px"
+          }}>
             <p>You don't have any orders yet.</p>
-            <button 
+            <button
               onClick={() => router.push("/products")}
               style={{
                 backgroundColor: "#ff6b6b",
@@ -211,6 +232,7 @@ export default function OrdersPage() {
         )}
       </div>
 
+      {/* FOOTER */}
       <footer className="footer">
         <p>&copy; 2025 Swiftthrift. All rights reserved.</p>
       </footer>
