@@ -1,10 +1,10 @@
+export const dynamic = 'force-dynamic';
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import "../styles.css";
-export const dynamic = 'force-dynamic';
 
 
 export default function OrdersPage() {
